@@ -1,0 +1,52 @@
+product <- data.frame(
+  Category = c("Electronics","Clothing","Appliances"),
+  Sales = c(50000,35000,40000)
+)
+
+print(product)
+
+product <- product[order(product$Sales, decreasing = TRUE), ]
+
+barplot(
+  product$Sales,
+  names.arg = product$Category,
+  horiz = TRUE,
+  col = c("red","blue","green"),
+  main = "Funnel Chart - Product Category Sales",
+  xlab = "Sales ($)",
+  xlim = c(0,55000)
+)
+
+text(
+  x = product$Sales,
+  y = seq(0.7, by = 1.2, length.out = nrow(product)),
+  labels = product$Sales,
+  pos = 4
+)
+
+pie(
+  product$Sales,
+  labels = paste(product$Category,"\n$",product$Sales,sep=""),
+  col = c("red","blue","green"),
+  main = "Sales Distribution by Product Category"
+)
+
+plot.new()
+
+title("Product Category Sales Table")
+
+table_data <- rbind(
+  c("Category","Sales ($)"),
+  cbind(product$Category, product$Sales)
+)
+
+text(
+  x = 0.5,
+  y = seq(0.8,0.3,length.out = nrow(table_data)),
+  labels = apply(table_data,1,paste,collapse = "          "),
+  cex = 1.2
+)
+
+write.csv(product,"Product_Category.csv",row.names = FALSE)
+
+cat("Product_Category.csv saved successfully.\n")
