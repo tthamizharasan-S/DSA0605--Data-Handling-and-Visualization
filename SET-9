@@ -1,0 +1,66 @@
+survey <- data.frame(
+  SurveyID = c(1,2,3),
+  Question1 = c("A","B","C"),
+  Question2 = c("B","A","A"),
+  Question3 = c("C","D","B")
+)
+
+print(survey)
+
+answers <- c("A","B","C","D")
+
+q1 <- table(factor(survey$Question1, levels = answers))
+
+barplot(
+  q1,
+  col = c("red","blue","green","orange"),
+  main = "Distribution of Question 1 Responses",
+  xlab = "Answers",
+  ylab = "Frequency",
+  names.arg = answers
+)
+
+response_matrix <- rbind(
+  table(factor(survey$Question1, levels = answers)),
+  table(factor(survey$Question2, levels = answers)),
+  table(factor(survey$Question3, levels = answers))
+)
+
+rownames(response_matrix) <- c("Question 1","Question 2","Question 3")
+
+barplot(
+  t(response_matrix),
+  beside = FALSE,
+  col = c("red","blue","green","orange"),
+  main = "Overall Survey Response Distribution",
+  xlab = "Questions",
+  ylab = "Frequency",
+  names.arg = rownames(response_matrix),
+  legend.text = answers
+)
+
+plot.new()
+
+title("Survey Response Table")
+
+table_data <- rbind(
+  c("Survey ID","Question 1","Question 2","Question 3"),
+  cbind(
+    survey$SurveyID,
+    survey$Question1,
+    survey$Question2,
+    survey$Question3
+  )
+)
+
+text(
+  x = 0.5,
+  y = seq(0.9,0.2,length.out = nrow(table_data)),
+  labels = apply(table_data,1,paste,collapse = "      "),
+  cex = 1
+)
+
+write.csv(survey, "Survey_Responses.csv", row.names = FALSE)
+
+cat("Survey_Responses.csv saved successfully.\n")
+
