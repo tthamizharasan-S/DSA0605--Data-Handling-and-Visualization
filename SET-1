@@ -1,0 +1,85 @@
+library(shiny)
+library(ggplot2)
+
+month <- c("January","February","March","April","May")
+sales <- c(15000,18000,22000,20000,23000)
+
+data1 <- data.frame(month,sales)
+
+product <- c("Laptop","Mobile","Tablet","Headphones","Smart Watch")
+product_sales <- c(52000,45000,28000,18000,25000)
+
+data2 <- data.frame(product,product_sales)
+
+advertising <- c(3000,3500,4000,3800,4500)
+
+data3 <- data.frame(advertising,sales)
+
+ui <- fluidPage(
+  
+  titlePanel("Sales Dashboard"),
+  
+  h3("1. Monthly Sales Line Chart"),
+  plotOutput("line"),
+  
+  h3("2. Top Selling Products"),
+  plotOutput("bar"),
+  
+  h3("3. Advertising Budget vs Monthly Sales"),
+  plotOutput("scatter"),
+  
+  h3("Scatter Plot Insight"),
+  
+  verbatimTextOutput("insight")
+)
+
+server <- function(input, output) {
+  
+  output$line <- renderPlot({
+    
+    ggplot(data1,aes(x=month,y=sales,group=1))+
+      geom_line(color="blue",linewidth=1)+
+      geom_point(color="red",size=3)+
+      labs(title="Monthly Sales",
+           x="Month",
+           y="Sales ($)")+
+      theme_minimal()
+    
+  })
+  
+  output$bar <- renderPlot({
+    
+    ggplot(data2,aes(x=product,y=product_sales,fill=product))+
+      geom_bar(stat="identity")+
+      labs(title="Top Selling Products",
+           x="Product",
+           y="Sales ($)")+
+      theme_minimal()+
+      theme(legend.position="none")
+    
+  })
+  
+  output$scatter <- renderPlot({
+    
+    ggplot(data3,aes(x=advertising,y=sales))+
+      geom_point(color="darkgreen",size=3)+
+      geom_smooth(method="lm",se=FALSE,color="red")+
+      labs(title="Advertising Budget vs Monthly Sales",
+           x="Advertising Budget ($)",
+           y="Sales ($)")+
+      theme_minimal()
+    
+  })
+  
+  output$insight <- renderText({
+    
+    paste(
+      "The scatter plot shows a positive relationship between advertising budget and monthly sales.",
+      "Higher advertising budget generally results in higher sales."
+    )
+    
+  })
+  
+}
+
+shinyApp(ui,server)
