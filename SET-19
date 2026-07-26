@@ -1,0 +1,170 @@
+#=========================================
+# Mobile App Usage Analysis
+#=========================================
+
+# Create Dataset
+
+mobile <- data.frame(
+  User_ID = c("U01","U02","U03","U04","U05","U06"),
+  Gender = c("Male","Female","Male","Female","Male","Female"),
+  Age = c(20,22,19,21,23,20),
+  Screen_Time = c(4.5,6.0,3.2,7.1,2.8,5.4),
+  App_Usage_Count = c(18,25,12,30,10,22),
+  Data_Used = c(2.4,3.8,1.6,4.5,1.2,3.1),
+  Satisfaction = c(3,5,3,5,2,4),
+  Usage_Date = c("2025-01-08",
+                 "2025-01-08",
+                 "2025-02-11",
+                 "2025-02-11",
+                 "2025-03-14",
+                 "2025-03-14")
+)
+
+print(mobile)
+
+
+#=========================================
+# GRAPH 1: Histogram and Density Plot
+# Screen Time Distribution
+#=========================================
+
+hist(
+  mobile$Screen_Time,
+  col = "skyblue",
+  border = "black",
+  probability = TRUE,
+  main = "Distribution of Screen Time",
+  xlab = "Screen Time (Hours)",
+  ylab = "Density"
+)
+
+screen_density <- density(mobile$Screen_Time)
+
+lines(
+  screen_density,
+  col = "red",
+  lwd = 2
+)
+
+rug(
+  mobile$Screen_Time,
+  col = "black"
+)
+
+legend(
+  "topright",
+  legend = c("Density Curve"),
+  col = "red",
+  lwd = 2
+)
+
+
+#=========================================
+# GRAPH 2: Scatter Plot
+# Data Used vs Screen Time
+#=========================================
+
+plot(
+  mobile$Data_Used,
+  mobile$Screen_Time,
+  pch = 19,
+  col = "blue",
+  main = "Data Used vs Screen Time",
+  xlab = "Data Used (GB)",
+  ylab = "Screen Time (Hours)"
+)
+
+# Trend Line
+
+model <- lm(Screen_Time ~ Data_Used,
+            data = mobile)
+
+abline(
+  model,
+  col = "red",
+  lwd = 2
+)
+
+# Correlation
+
+correlation <- cor(
+  mobile$Data_Used,
+  mobile$Screen_Time
+)
+
+cat("\nCorrelation between Data Used and Screen Time:",
+    correlation,
+    "\n")
+
+
+#=========================================
+# GRAPH 3: Average Satisfaction by Gender
+#=========================================
+
+avg_satisfaction <- aggregate(
+  Satisfaction ~ Gender,
+  data = mobile,
+  mean
+)
+
+print(avg_satisfaction)
+
+
+bar <- barplot(
+  avg_satisfaction$Satisfaction,
+  names.arg = avg_satisfaction$Gender,
+  col = c("pink","lightblue"),
+  main = "Average Satisfaction Score by Gender",
+  xlab = "Gender",
+  ylab = "Average Satisfaction"
+)
+
+# Add Value Labels
+
+text(
+  x = bar,
+  y = avg_satisfaction$Satisfaction,
+  labels = round(avg_satisfaction$Satisfaction,2),
+  pos = 3
+)
+
+
+#=========================================
+# Display Dataset Table
+#=========================================
+
+plot.new()
+
+title("Mobile App Usage Data Table")
+
+table_data <- rbind(
+  c("User ID","Gender","Age","Screen Time","Data Used","Satisfaction"),
+  cbind(
+    mobile$User_ID,
+    mobile$Gender,
+    mobile$Age,
+    mobile$Screen_Time,
+    mobile$Data_Used,
+    mobile$Satisfaction
+  )
+)
+
+text(
+  x = 0.5,
+  y = seq(0.9,0.2,length.out = nrow(table_data)),
+  labels = apply(table_data,1,paste,collapse="     "),
+  cex = 0.8
+)
+
+
+#=========================================
+# Save Dataset for Tableau
+#=========================================
+
+write.csv(
+  mobile,
+  "Mobile_App_Usage.csv",
+  row.names = FALSE
+)
+
+cat("\nMobile_App_Usage.csv saved successfully.\n")
