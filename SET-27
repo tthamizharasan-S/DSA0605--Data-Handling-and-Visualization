@@ -1,0 +1,148 @@
+#=========================================
+# Energy Plant Monitoring Analysis
+#=========================================
+
+# Create Dataset
+
+powerplant <- data.frame(
+  Plant_ID = c(1,2,3,4,5),
+  Output_MW = c(120,150,100,170,110),
+  Temperature = c(65,70,60,75,62),
+  Status = c("Active",
+             "Active",
+             "Maintenance",
+             "Active",
+             "Maintenance")
+)
+
+print(powerplant)
+
+
+#=========================================
+# GRAPH 1 : Histogram
+# Power Output Distribution
+#=========================================
+
+hist(
+  powerplant$Output_MW,
+  col = "lightblue",
+  border = "black",
+  main = "Distribution of Power Output",
+  xlab = "Power Output (MW)",
+  ylab = "Frequency"
+)
+
+
+#=========================================
+# GRAPH 2 : Pie Chart
+# Plant Status Distribution
+#=========================================
+
+status_count <- table(powerplant$Status)
+
+pie(
+  status_count,
+  col = c("green","red"),
+  main = "Power Plant Status Distribution",
+  labels = paste(
+    names(status_count),
+    status_count
+  )
+)
+
+
+#=========================================
+# GRAPH 3 : Bar Chart
+# Temperature by Plant
+#=========================================
+
+bar <- barplot(
+  powerplant$Temperature,
+  names.arg = paste("Plant",powerplant$Plant_ID),
+  col = c("skyblue",
+          "orange",
+          "purple",
+          "red",
+          "green"),
+  main = "Temperature by Plant",
+  xlab = "Plant ID",
+  ylab = "Temperature (°C)"
+)
+
+# Add Value Labels
+
+text(
+  x = bar,
+  y = powerplant$Temperature,
+  labels = powerplant$Temperature,
+  pos = 3
+)
+
+
+#=========================================
+# GRAPH 4 : Scatter Plot
+# Output vs Temperature
+#=========================================
+
+plot(
+  powerplant$Temperature,
+  powerplant$Output_MW,
+  pch = 19,
+  cex = 1.5,
+  col = "blue",
+  main = "Power Output vs Temperature",
+  xlab = "Temperature (°C)",
+  ylab = "Power Output (MW)"
+)
+
+# Add Trend Line
+
+model <- lm(
+  Output_MW ~ Temperature,
+  data = powerplant
+)
+
+abline(
+  model,
+  col = "red",
+  lwd = 2
+)
+
+
+#=========================================
+# Display Power Plant Data Table
+#=========================================
+
+plot.new()
+
+title("Power Plant Operations Data Table")
+
+table_data <- rbind(
+  c("Plant ID","Output MW","Temperature","Status"),
+  cbind(
+    powerplant$Plant_ID,
+    powerplant$Output_MW,
+    powerplant$Temperature,
+    powerplant$Status
+  )
+)
+
+text(
+  x = 0.5,
+  y = seq(0.9,0.2,length.out = nrow(table_data)),
+  labels = apply(table_data,1,paste,collapse="     "),
+  cex = 0.9
+)
+
+
+#=========================================
+# Save Dataset
+#=========================================
+
+write.csv(
+  powerplant,
+  "Power_Plant_Operations.csv",
+  row.names = FALSE
+)
+
+cat("Power_Plant_Operations.csv saved successfully.\n")
