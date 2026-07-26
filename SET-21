@@ -1,0 +1,152 @@
+#=========================================
+# Movie Ratings Analysis
+#=========================================
+
+# Create Dataset
+
+movie <- data.frame(
+  Movie_ID = c(1,2,3,4,5),
+  Genre = c("Action",
+            "Comedy",
+            "Drama",
+            "Action",
+            "Comedy"),
+  Rating = c(4.5,3.8,4.2,4.7,3.5),
+  Duration = c(120,90,140,130,95)
+)
+
+print(movie)
+
+
+#=========================================
+# GRAPH 1 : Histogram
+# Distribution of Movie Ratings
+#=========================================
+
+hist(
+  movie$Rating,
+  col = "skyblue",
+  border = "black",
+  main = "Distribution of Movie Ratings",
+  xlab = "Movie Rating",
+  ylab = "Frequency"
+)
+
+
+#=========================================
+# GRAPH 2 : Pie Chart
+# Genre Distribution
+#=========================================
+
+genre_count <- table(movie$Genre)
+
+pie(
+  genre_count,
+  col = c("red","blue","green"),
+  main = "Movie Genre Distribution",
+  labels = paste(
+    names(genre_count),
+    genre_count
+  )
+)
+
+
+#=========================================
+# GRAPH 3 : Bar Chart
+# Average Rating by Genre
+#=========================================
+
+avg_rating <- aggregate(
+  Rating ~ Genre,
+  data = movie,
+  mean
+)
+
+print(avg_rating)
+
+
+bar <- barplot(
+  avg_rating$Rating,
+  names.arg = avg_rating$Genre,
+  col = c("orange",
+          "purple",
+          "lightgreen"),
+  main = "Average Rating by Genre",
+  xlab = "Genre",
+  ylab = "Average Rating"
+)
+
+# Add Value Labels
+
+text(
+  x = bar,
+  y = avg_rating$Rating,
+  labels = round(avg_rating$Rating,2),
+  pos = 3
+)
+
+
+#=========================================
+# GRAPH 4 : Scatter Plot
+# Duration vs Rating
+#=========================================
+
+plot(
+  movie$Duration,
+  movie$Rating,
+  pch = 19,
+  col = "blue",
+  main = "Movie Duration vs Rating",
+  xlab = "Duration (Minutes)",
+  ylab = "Rating"
+)
+
+# Add Trend Line
+
+model <- lm(Rating ~ Duration,
+            data = movie)
+
+abline(
+  model,
+  col = "red",
+  lwd = 2
+)
+
+
+#=========================================
+# Display Movie Data Table
+#=========================================
+
+plot.new()
+
+title("Movie Ratings Data Table")
+
+table_data <- rbind(
+  c("Movie ID","Genre","Rating","Duration"),
+  cbind(
+    movie$Movie_ID,
+    movie$Genre,
+    movie$Rating,
+    movie$Duration
+  )
+)
+
+text(
+  x = 0.5,
+  y = seq(0.9,0.2,length.out = nrow(table_data)),
+  labels = apply(table_data,1,paste,collapse="     "),
+  cex = 0.9
+)
+
+
+#=========================================
+# Save Dataset
+#=========================================
+
+write.csv(
+  movie,
+  "Movie_Ratings.csv",
+  row.names = FALSE
+)
+
+cat("Movie_Ratings.csv saved successfully.\n")
