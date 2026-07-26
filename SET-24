@@ -1,0 +1,150 @@
+#=========================================
+# Hotel Booking Analysis
+#=========================================
+
+# Create Dataset
+
+hotel <- data.frame(
+  Booking_ID = c(1,2,3,4,5),
+  Stay_Nights = c(2,5,3,7,4),
+  Guests = c(2,4,1,3,2),
+  Room_Type = c("Standard",
+                "Deluxe",
+                "Standard",
+                "Suite",
+                "Deluxe")
+)
+
+print(hotel)
+
+
+#=========================================
+# GRAPH 1 : Histogram
+# Stay Nights Distribution
+#=========================================
+
+hist(
+  hotel$Stay_Nights,
+  col = "lightblue",
+  border = "black",
+  main = "Distribution of Stay Nights",
+  xlab = "Number of Stay Nights",
+  ylab = "Frequency"
+)
+
+
+#=========================================
+# GRAPH 2 : Pie Chart
+# Room Type Distribution
+#=========================================
+
+room_count <- table(hotel$Room_Type)
+
+pie(
+  room_count,
+  col = c("skyblue",
+          "orange",
+          "green"),
+  main = "Hotel Room Type Distribution",
+  labels = paste(
+    names(room_count),
+    room_count
+  )
+)
+
+
+#=========================================
+# GRAPH 3 : Bar Chart
+# Guests per Booking
+#=========================================
+
+bar <- barplot(
+  hotel$Guests,
+  names.arg = paste("Booking",hotel$Booking_ID),
+  col = c("purple",
+          "blue",
+          "green",
+          "red",
+          "orange"),
+  main = "Guests per Booking",
+  xlab = "Booking ID",
+  ylab = "Number of Guests"
+)
+
+# Add Value Labels
+
+text(
+  x = bar,
+  y = hotel$Guests,
+  labels = hotel$Guests,
+  pos = 3
+)
+
+
+#=========================================
+# GRAPH 4 : Scatter Plot
+# Guests vs Stay Nights
+#=========================================
+
+plot(
+  hotel$Guests,
+  hotel$Stay_Nights,
+  pch = 19,
+  cex = 1.5,
+  col = "darkblue",
+  main = "Guests vs Stay Nights",
+  xlab = "Number of Guests",
+  ylab = "Stay Nights"
+)
+
+# Add Trend Line
+
+model <- lm(
+  Stay_Nights ~ Guests,
+  data = hotel
+)
+
+abline(
+  model,
+  col = "red",
+  lwd = 2
+)
+
+
+#=========================================
+# Display Hotel Data Table
+#=========================================
+
+plot.new()
+
+title("Hotel Booking Data Table")
+
+table_data <- rbind(
+  c("Booking ID","Stay Nights","Guests","Room Type"),
+  cbind(
+    hotel$Booking_ID,
+    hotel$Stay_Nights,
+    hotel$Guests,
+    hotel$Room_Type
+  )
+)
+
+text(
+  x = 0.5,
+  y = seq(0.9,0.2,length.out = nrow(table_data)),
+  labels = apply(table_data,1,paste,collapse="     "),
+  cex = 0.9
+)
+
+
+#=========================================
+# Save Dataset
+#=========================================
+
+write.csv(
+  hotel,
+  "Hotel_Booking_Analysis.csv",
+  row.names = FALSE
+)
+
+cat("Hotel_Booking_Analysis.csv saved successfully.\n")
