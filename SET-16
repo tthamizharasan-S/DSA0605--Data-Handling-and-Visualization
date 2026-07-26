@@ -1,0 +1,105 @@
+#=========================================
+# SET: Patient Health Risk Analysis
+#=========================================
+
+# Create Dataset
+patient <- data.frame(
+  PatientID = c("P1","P2","P3","P4","P5"),
+  Age = c(25,40,55,35,60),
+  BMI = c(22,28,30,26,32),
+  BP = c(120,135,145,130,150),
+  Cholesterol = c(180,210,240,200,260)
+)
+
+print(patient)
+
+#=========================================
+# Task 1: Scatterplot Matrix
+#=========================================
+
+pairs(patient[,2:5],
+      main = "Scatterplot Matrix of Patient Health Indicators",
+      col = "blue",
+      pch = 19)
+
+#=========================================
+# Scatterplot Matrix Insight
+#=========================================
+
+cat("\nScatterplot Matrix Insight:\n")
+cat("Age, BMI, Blood Pressure, and Cholesterol show positive relationships.\n")
+cat("Older patients generally have higher BP and Cholesterol.\n")
+cat("Patient P5 appears to have the highest overall health risk.\n")
+
+#=========================================
+# Task 2: Q-Q Plot
+#=========================================
+
+qqnorm(patient$Cholesterol,
+       main = "Q-Q Plot of Cholesterol",
+       pch = 19,
+       col = "blue")
+
+qqline(patient$Cholesterol,
+       col = "red",
+       lwd = 2)
+
+#=========================================
+# Task 2: ECDF Plot
+#=========================================
+
+plot(ecdf(patient$Cholesterol),
+     main = "ECDF of Cholesterol",
+     xlab = "Cholesterol",
+     ylab = "Cumulative Probability",
+     col = "darkgreen",
+     lwd = 2)
+
+#=========================================
+# Q-Q Plot and ECDF Insight
+#=========================================
+
+cat("\nQ-Q Plot and ECDF Insight:\n")
+cat("The Q-Q plot shows cholesterol values are approximately normally distributed.\n")
+cat("The ECDF displays the cumulative distribution of cholesterol levels.\n")
+cat("A slight positive skewness may be observed due to higher cholesterol values.\n")
+
+#=========================================
+# Task 3: Bar Chart of Average Values
+#=========================================
+
+avg <- c(mean(patient$Age),
+         mean(patient$BMI),
+         mean(patient$BP),
+         mean(patient$Cholesterol))
+
+names(avg) <- c("Age","BMI","BP","Cholesterol")
+
+barplot(avg,
+        col = c("skyblue","orange","green","red"),
+        main = "Average Health Indicators",
+        xlab = "Health Indicators",
+        ylab = "Average Value")
+
+#=========================================
+# Bar Chart Insight
+#=========================================
+
+cat("\nAverage Health Indicators:\n")
+cat("Average Age =", mean(patient$Age), "\n")
+cat("Average BMI =", mean(patient$BMI), "\n")
+cat("Average BP =", mean(patient$BP), "\n")
+cat("Average Cholesterol =", mean(patient$Cholesterol), "\n")
+
+cat("\nHealth Risk Insight:\n")
+cat("The average BMI indicates patients are overweight.\n")
+cat("Average BP and Cholesterol are above normal levels.\n")
+cat("Overall, the patient group has moderate to high health risk.\n")
+
+#=========================================
+# Save Dataset for Tableau
+#=========================================
+
+write.csv(patient, "patient_health_risk.csv", row.names = FALSE)
+
+cat("\nDataset saved as patient_health_risk.csv\n")
