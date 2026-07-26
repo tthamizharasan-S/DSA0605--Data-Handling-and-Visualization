@@ -1,0 +1,154 @@
+#=========================================
+# Student Academic Performance
+#=========================================
+
+# Create Dataset
+
+student <- data.frame(
+  StudentID = c("S1","S2","S3","S4","S5"),
+  Age = c(19,21,20,22,23),
+  Study_Hours = c(12,8,15,10,7),
+  Attendance = c(90,70,95,85,60),
+  Test_Score = c(85,70,92,80,65),
+  Participation_Score = c(8,7,9,8,6)
+)
+
+print(student)
+
+
+#=========================================
+# GRAPH 1: Stacked Area Chart
+#=========================================
+
+score_matrix <- rbind(
+  student$Test_Score,
+  student$Participation_Score
+)
+
+rownames(score_matrix) <- c("Test Score",
+                            "Participation Score")
+
+area_data <- t(score_matrix)
+
+plot(
+  1:5,
+  area_data[,1],
+  type = "n",
+  main = "Test Score and Participation Score Across Students",
+  xlab = "Students",
+  ylab = "Score",
+  xaxt = "n"
+)
+
+axis(1,
+     at = 1:5,
+     labels = student$StudentID)
+
+polygon(
+  c(1:5,5:1),
+  c(rep(0,5),rev(area_data[,1])),
+  col = "skyblue"
+)
+
+polygon(
+  c(1:5,5:1),
+  c(area_data[,1],rev(rowSums(area_data))),
+  col = "orange"
+)
+
+legend(
+  "topright",
+  legend = c("Test Score","Participation Score"),
+  fill = c("skyblue","orange")
+)
+
+
+#=========================================
+# GRAPH 2: Boxplot
+# Study Hours by Attendance Quartiles
+#=========================================
+
+attendance_quartile <- cut(
+  student$Attendance,
+  breaks = quantile(student$Attendance,
+                    probs = seq(0,1,0.25)),
+  include.lowest = TRUE,
+  labels = c("Q1","Q2","Q3","Q4")
+)
+
+boxplot(
+  student$Study_Hours ~ attendance_quartile,
+  col = c("red","blue","green","orange"),
+  main = "Study Hours by Attendance Quartiles",
+  xlab = "Attendance Quartiles",
+  ylab = "Study Hours"
+)
+
+
+#=========================================
+# GRAPH 3: Density Plot
+# Test Score Distribution
+#=========================================
+
+density_score <- density(student$Test_Score)
+
+plot(
+  density_score,
+  col = "blue",
+  lwd = 2,
+  main = "Density Plot of Test Scores",
+  xlab = "Test Score",
+  ylab = "Density"
+)
+
+polygon(
+  density_score,
+  col = rgb(0,0,1,0.3),
+  border = "blue"
+)
+
+rug(
+  student$Test_Score,
+  col = "red"
+)
+
+
+#=========================================
+# Display Student Data Table
+#=========================================
+
+plot.new()
+
+title("Student Academic Performance Table")
+
+table_data <- rbind(
+  c("Student ID","Age","Study Hours","Attendance","Test Score","Participation"),
+  cbind(
+    student$StudentID,
+    student$Age,
+    student$Study_Hours,
+    student$Attendance,
+    student$Test_Score,
+    student$Participation_Score
+  )
+)
+
+text(
+  x = 0.5,
+  y = seq(0.9,0.2,length.out = nrow(table_data)),
+  labels = apply(table_data,1,paste,collapse = "      "),
+  cex = 0.9
+)
+
+
+#=========================================
+# Save Dataset for Tableau
+#=========================================
+
+write.csv(
+  student,
+  "Student_Academic_Performance.csv",
+  row.names = FALSE
+)
+
+cat("Student_Academic_Performance.csv saved successfully.\n")
