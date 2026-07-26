@@ -1,0 +1,149 @@
+#=========================================
+# Library Borrowing Records Analysis
+#=========================================
+
+# Create Dataset
+
+library_data <- data.frame(
+  User_ID = c(1,2,3,4,5),
+  Books_Borrowed = c(2,5,3,6,1),
+  Days_Kept = c(10,25,14,30,7),
+  Fine_Amount = c(0,15,0,20,0)
+)
+
+print(library_data)
+
+
+#=========================================
+# GRAPH 1 : Histogram
+# Books Borrowed Distribution
+#=========================================
+
+hist(
+  library_data$Books_Borrowed,
+  col = "skyblue",
+  border = "black",
+  main = "Distribution of Books Borrowed",
+  xlab = "Number of Books Borrowed",
+  ylab = "Frequency"
+)
+
+
+#=========================================
+# GRAPH 2 : Pie Chart
+# Users With and Without Fines
+#=========================================
+
+fine_status <- ifelse(
+  library_data$Fine_Amount > 0,
+  "With Fine",
+  "Without Fine"
+)
+
+fine_count <- table(fine_status)
+
+pie(
+  fine_count,
+  col = c("red","green"),
+  main = "Users With and Without Fines",
+  labels = paste(
+    names(fine_count),
+    fine_count
+  )
+)
+
+
+#=========================================
+# GRAPH 3 : Bar Chart
+# Fine Amount by User
+#=========================================
+
+bar <- barplot(
+  library_data$Fine_Amount,
+  names.arg = paste("User",library_data$User_ID),
+  col = c("blue",
+          "orange",
+          "green",
+          "red",
+          "purple"),
+  main = "Fine Amount by User",
+  xlab = "User ID",
+  ylab = "Fine Amount"
+)
+
+# Add Value Labels
+
+text(
+  x = bar,
+  y = library_data$Fine_Amount,
+  labels = library_data$Fine_Amount,
+  pos = 3
+)
+
+
+#=========================================
+# GRAPH 4 : Scatter Plot
+# Days Kept vs Fine Amount
+#=========================================
+
+plot(
+  library_data$Days_Kept,
+  library_data$Fine_Amount,
+  pch = 19,
+  col = "blue",
+  main = "Days Kept vs Fine Amount",
+  xlab = "Days Kept",
+  ylab = "Fine Amount"
+)
+
+# Add Trend Line
+
+model <- lm(
+  Fine_Amount ~ Days_Kept,
+  data = library_data
+)
+
+abline(
+  model,
+  col = "red",
+  lwd = 2
+)
+
+
+#=========================================
+# Display Library Data Table
+#=========================================
+
+plot.new()
+
+title("Library Borrowing Records Table")
+
+table_data <- rbind(
+  c("User ID","Books Borrowed","Days Kept","Fine Amount"),
+  cbind(
+    library_data$User_ID,
+    library_data$Books_Borrowed,
+    library_data$Days_Kept,
+    library_data$Fine_Amount
+  )
+)
+
+text(
+  x = 0.5,
+  y = seq(0.9,0.2,length.out = nrow(table_data)),
+  labels = apply(table_data,1,paste,collapse="     "),
+  cex = 0.9
+)
+
+
+#=========================================
+# Save Dataset
+#=========================================
+
+write.csv(
+  library_data,
+  "Library_Borrowing_Records.csv",
+  row.names = FALSE
+)
+
+cat("Library_Borrowing_Records.csv saved successfully.\n")
