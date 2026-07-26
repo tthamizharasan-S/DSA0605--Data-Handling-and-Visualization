@@ -1,0 +1,128 @@
+#=========================================
+# Vehicle Performance Analysis
+#=========================================
+
+# Create Dataset
+vehicle <- data.frame(
+  Vehicle_ID = c("V1","V2","V3","V4","V5"),
+  Engine_Size = c(1.5,2.0,3.0,2.5,1.8),
+  Horsepower = c(110,150,250,200,130),
+  Fuel_Efficiency = c(18,15,12,14,17),
+  Top_Speed = c(180,200,250,220,190),
+  Safety_Rating = factor(c(4,5,5,4,3))
+)
+
+print(vehicle)
+
+#=========================================
+# Install Packages (Run only once)
+#=========================================
+
+# install.packages("ggplot2")
+# install.packages("corrplot")
+
+library(ggplot2)
+library(corrplot)
+
+#=========================================
+# GRAPH 1 : Violin Plot
+# Fuel Efficiency vs Safety Rating
+#=========================================
+
+ggplot(vehicle,
+       aes(x = Safety_Rating,
+           y = Fuel_Efficiency,
+           fill = Safety_Rating)) +
+  geom_violin(trim = FALSE,
+              alpha = 0.7) +
+  geom_boxplot(width = 0.15,
+               fill = "white") +
+  labs(title = "Fuel Efficiency by Safety Rating",
+       x = "Safety Rating",
+       y = "Fuel Efficiency (km/l)") +
+  theme_minimal()
+
+
+#=========================================
+# GRAPH 2 : Scatter Plot
+# Horsepower vs Top Speed
+#=========================================
+
+ggplot(vehicle,
+       aes(x = Horsepower,
+           y = Top_Speed,
+           color = Engine_Size)) +
+  geom_point(size = 4) +
+  geom_smooth(method = "lm",
+              se = FALSE,
+              color = "black") +
+  labs(title = "Horsepower vs Top Speed",
+       x = "Horsepower",
+       y = "Top Speed (km/h)",
+       color = "Engine Size (L)") +
+  theme_minimal()
+
+
+#=========================================
+# GRAPH 3 : Correlation Heatmap
+#=========================================
+
+vehicle_num <- vehicle[, c("Engine_Size",
+                           "Horsepower",
+                           "Fuel_Efficiency",
+                           "Top_Speed")]
+
+cor_matrix <- cor(vehicle_num)
+
+print(cor_matrix)
+
+corrplot(cor_matrix,
+         method = "color",
+         type = "upper",
+         addCoef.col = "black",
+         tl.col = "black",
+         tl.srt = 45)
+
+
+#=========================================
+# GRAPH 4 : Bar Chart
+# Fuel Efficiency of Each Vehicle
+#=========================================
+
+barplot(vehicle$Fuel_Efficiency,
+        names.arg = vehicle$Vehicle_ID,
+        col = c("skyblue",
+                "orange",
+                "green",
+                "pink",
+                "purple"),
+        main = "Fuel Efficiency of Vehicles",
+        xlab = "Vehicle ID",
+        ylab = "Fuel Efficiency (km/l)")
+
+
+#=========================================
+# GRAPH 5 : Boxplot
+# Top Speed by Safety Rating
+#=========================================
+
+boxplot(Top_Speed ~ Safety_Rating,
+        data = vehicle,
+        col = c("lightblue",
+                "lightgreen",
+                "lightpink"),
+        main = "Top Speed by Safety Rating",
+        xlab = "Safety Rating",
+        ylab = "Top Speed (km/h)")
+
+
+#=========================================
+# Save Dataset for Tableau
+#=========================================
+
+write.csv(vehicle,
+          "vehicle_performance.csv",
+          row.names = FALSE)
+
+cat("\nDataset saved as vehicle_performance.csv\n")
+
