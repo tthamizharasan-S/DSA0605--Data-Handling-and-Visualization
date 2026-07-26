@@ -1,0 +1,136 @@
+#=========================================
+# Hospital Appointment Analysis
+#=========================================
+
+# Create Dataset
+
+hospital <- data.frame(
+  Patient_ID = c(1,2,3,4,5),
+  Age = c(25,40,35,50,29),
+  Waiting_Time = c(2,5,1,7,3),
+  Appointment_Status = c("Attended",
+                         "Missed",
+                         "Attended",
+                         "Missed",
+                         "Attended")
+)
+
+print(hospital)
+
+
+#=========================================
+# GRAPH 1 : Histogram
+# Patient Age Distribution
+#=========================================
+
+hist(
+  hospital$Age,
+  col = "skyblue",
+  border = "black",
+  main = "Distribution of Patient Ages",
+  xlab = "Age",
+  ylab = "Frequency"
+)
+
+
+#=========================================
+# GRAPH 2 : Pie Chart
+# Appointment Status Distribution
+#=========================================
+
+status_count <- table(hospital$Appointment_Status)
+
+pie(
+  status_count,
+  col = c("green","red"),
+  main = "Appointment Status Distribution",
+  labels = paste(
+    names(status_count),
+    status_count
+  )
+)
+
+
+#=========================================
+# GRAPH 3 : Bar Chart
+# Waiting Time by Patient
+#=========================================
+
+barplot(
+  hospital$Waiting_Time,
+  names.arg = paste("P",hospital$Patient_ID),
+  col = c("blue",
+          "orange",
+          "green",
+          "red",
+          "purple"),
+  main = "Waiting Time by Patient",
+  xlab = "Patient ID",
+  ylab = "Waiting Time (Days)"
+)
+
+
+#=========================================
+# GRAPH 4 : Scatter Plot
+# Age vs Waiting Time
+#=========================================
+
+plot(
+  hospital$Age,
+  hospital$Waiting_Time,
+  pch = 19,
+  col = "blue",
+  main = "Age vs Waiting Time",
+  xlab = "Patient Age",
+  ylab = "Waiting Time (Days)"
+)
+
+# Add Trend Line
+
+model <- lm(Waiting_Time ~ Age,
+            data = hospital)
+
+abline(
+  model,
+  col = "red",
+  lwd = 2
+)
+
+
+#=========================================
+# Display Data Table
+#=========================================
+
+plot.new()
+
+title("Hospital Appointment Data Table")
+
+table_data <- rbind(
+  c("Patient ID","Age","Waiting Time","Status"),
+  cbind(
+    hospital$Patient_ID,
+    hospital$Age,
+    hospital$Waiting_Time,
+    hospital$Appointment_Status
+  )
+)
+
+text(
+  x = 0.5,
+  y = seq(0.9,0.2,length.out = nrow(table_data)),
+  labels = apply(table_data,1,paste,collapse="     "),
+  cex = 0.9
+)
+
+
+#=========================================
+# Save Dataset
+#=========================================
+
+write.csv(
+  hospital,
+  "Hospital_Appointments.csv",
+  row.names = FALSE
+)
+
+cat("Hospital_Appointments.csv saved successfully.\n")
