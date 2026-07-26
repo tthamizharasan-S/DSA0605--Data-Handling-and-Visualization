@@ -1,0 +1,148 @@
+#=========================================
+# Social Media Engagement Analysis
+#=========================================
+
+# Create Dataset
+
+social_media <- data.frame(
+  Post_ID = c(1,2,3,4,5),
+  Likes = c(120,200,150,300,180),
+  Comments = c(15,30,20,40,25),
+  Shares = c(10,20,12,35,18)
+)
+
+print(social_media)
+
+
+#=========================================
+# GRAPH 1 : Histogram
+# Likes Distribution
+#=========================================
+
+hist(
+  social_media$Likes,
+  col = "skyblue",
+  border = "black",
+  main = "Distribution of Post Likes",
+  xlab = "Number of Likes",
+  ylab = "Frequency"
+)
+
+
+#=========================================
+# GRAPH 2 : Pie Chart
+# Total Engagement Components
+#=========================================
+
+engagement <- c(
+  Likes = sum(social_media$Likes),
+  Comments = sum(social_media$Comments),
+  Shares = sum(social_media$Shares)
+)
+
+pie(
+  engagement,
+  col = c("blue","orange","green"),
+  main = "Total Social Media Engagement Components",
+  labels = paste(
+    names(engagement),
+    engagement
+  )
+)
+
+
+#=========================================
+# GRAPH 3 : Bar Chart
+# Comments by Post
+#=========================================
+
+bar <- barplot(
+  social_media$Comments,
+  names.arg = paste("Post",social_media$Post_ID),
+  col = c("red",
+          "blue",
+          "green",
+          "purple",
+          "orange"),
+  main = "Comments Received by Post",
+  xlab = "Post ID",
+  ylab = "Number of Comments"
+)
+
+# Add Value Labels
+
+text(
+  x = bar,
+  y = social_media$Comments,
+  labels = social_media$Comments,
+  pos = 3
+)
+
+
+#=========================================
+# GRAPH 4 : Scatter Plot
+# Likes vs Shares
+#=========================================
+
+plot(
+  social_media$Likes,
+  social_media$Shares,
+  pch = 19,
+  cex = 1.5,
+  col = "blue",
+  main = "Likes vs Shares",
+  xlab = "Number of Likes",
+  ylab = "Number of Shares"
+)
+
+# Add Trend Line
+
+model <- lm(
+  Shares ~ Likes,
+  data = social_media
+)
+
+abline(
+  model,
+  col = "red",
+  lwd = 2
+)
+
+
+#=========================================
+# Display Social Media Data Table
+#=========================================
+
+plot.new()
+
+title("Social Media Posts Data Table")
+
+table_data <- rbind(
+  c("Post ID","Likes","Comments","Shares"),
+  cbind(
+    social_media$Post_ID,
+    social_media$Likes,
+    social_media$Comments,
+    social_media$Shares
+  )
+)
+
+text(
+  x = 0.5,
+  y = seq(0.9,0.2,length.out = nrow(table_data)),
+  labels = apply(table_data,1,paste,collapse="     "),
+  cex = 0.9
+)
+
+
+#=========================================
+# Save Dataset
+#=========================================
+
+write.csv(
+  social_media,
+  "Social_Media_Engagement.csv",
+  row.names = FALSE
+)
+
+cat("Social_Media_Engagement.csv saved successfully.\n")
