@@ -1,0 +1,148 @@
+#=========================================
+# Airline Passenger Analysis
+#=========================================
+
+# Create Dataset
+
+airline <- data.frame(
+  Passenger_ID = c(1,2,3,4,5),
+  Age = c(28,45,33,52,39),
+  Flight_Hours = c(2,8,5,10,6),
+  Satisfaction = c("High",
+                   "Medium",
+                   "High",
+                   "Low",
+                   "Medium")
+)
+
+print(airline)
+
+
+#=========================================
+# GRAPH 1 : Histogram
+# Passenger Age Distribution
+#=========================================
+
+hist(
+  airline$Age,
+  col = "lightblue",
+  border = "black",
+  main = "Distribution of Passenger Ages",
+  xlab = "Passenger Age",
+  ylab = "Frequency"
+)
+
+
+#=========================================
+# GRAPH 2 : Pie Chart
+# Satisfaction Level Distribution
+#=========================================
+
+satisfaction_count <- table(airline$Satisfaction)
+
+pie(
+  satisfaction_count,
+  col = c("green","orange","red"),
+  main = "Passenger Satisfaction Levels",
+  labels = paste(
+    names(satisfaction_count),
+    satisfaction_count
+  )
+)
+
+
+#=========================================
+# GRAPH 3 : Bar Chart
+# Flight Hours by Passenger
+#=========================================
+
+bar <- barplot(
+  airline$Flight_Hours,
+  names.arg = paste("P",airline$Passenger_ID),
+  col = c("skyblue",
+          "purple",
+          "green",
+          "orange",
+          "pink"),
+  main = "Flight Hours by Passenger",
+  xlab = "Passenger ID",
+  ylab = "Flight Hours"
+)
+
+# Add Value Labels
+
+text(
+  x = bar,
+  y = airline$Flight_Hours,
+  labels = airline$Flight_Hours,
+  pos = 3
+)
+
+
+#=========================================
+# GRAPH 4 : Scatter Plot
+# Age vs Flight Hours
+#=========================================
+
+plot(
+  airline$Age,
+  airline$Flight_Hours,
+  pch = 19,
+  col = "blue",
+  cex = 1.5,
+  main = "Age vs Flight Hours",
+  xlab = "Passenger Age",
+  ylab = "Flight Hours"
+)
+
+# Add Trend Line
+
+model <- lm(
+  Flight_Hours ~ Age,
+  data = airline
+)
+
+abline(
+  model,
+  col = "red",
+  lwd = 2
+)
+
+
+#=========================================
+# Display Airline Data Table
+#=========================================
+
+plot.new()
+
+title("Airline Passenger Data Table")
+
+table_data <- rbind(
+  c("Passenger ID","Age","Flight Hours","Satisfaction"),
+  cbind(
+    airline$Passenger_ID,
+    airline$Age,
+    airline$Flight_Hours,
+    airline$Satisfaction
+  )
+)
+
+text(
+  x = 0.5,
+  y = seq(0.9,0.2,length.out = nrow(table_data)),
+  labels = apply(table_data,1,paste,collapse="     "),
+  cex = 0.9
+)
+
+
+#=========================================
+# Save Dataset
+#=========================================
+
+write.csv(
+  airline,
+  "Airline_Passenger_Analysis.csv",
+  row.names = FALSE
+)
+
+cat("Airline_Passenger_Analysis.csv saved successfully.\n")
