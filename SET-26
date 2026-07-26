@@ -1,0 +1,148 @@
+#=========================================
+# Restaurant Orders Analysis
+#=========================================
+
+# Create Dataset
+
+restaurant <- data.frame(
+  Order_ID = c(1,2,3,4,5),
+  Items_Ordered = c(2,5,3,4,2),
+  Bill_Amount = c(25,60,35,50,20),
+  Dining_Type = c("Dine-In",
+                  "Takeaway",
+                  "Dine-In",
+                  "Delivery",
+                  "Takeaway")
+)
+
+print(restaurant)
+
+
+#=========================================
+# GRAPH 1 : Histogram
+# Bill Amount Distribution
+#=========================================
+
+hist(
+  restaurant$Bill_Amount,
+  col = "lightblue",
+  border = "black",
+  main = "Distribution of Bill Amounts",
+  xlab = "Bill Amount",
+  ylab = "Frequency"
+)
+
+
+#=========================================
+# GRAPH 2 : Pie Chart
+# Dining Type Distribution
+#=========================================
+
+dining_count <- table(restaurant$Dining_Type)
+
+pie(
+  dining_count,
+  col = c("green","orange","purple"),
+  main = "Dining Type Distribution",
+  labels = paste(
+    names(dining_count),
+    dining_count
+  )
+)
+
+
+#=========================================
+# GRAPH 3 : Bar Chart
+# Items Ordered by Order
+#=========================================
+
+bar <- barplot(
+  restaurant$Items_Ordered,
+  names.arg = paste("Order",restaurant$Order_ID),
+  col = c("skyblue",
+          "red",
+          "green",
+          "orange",
+          "purple"),
+  main = "Items Ordered by Order",
+  xlab = "Order ID",
+  ylab = "Number of Items"
+)
+
+# Add Value Labels
+
+text(
+  x = bar,
+  y = restaurant$Items_Ordered,
+  labels = restaurant$Items_Ordered,
+  pos = 3
+)
+
+
+#=========================================
+# GRAPH 4 : Scatter Plot
+# Items Ordered vs Bill Amount
+#=========================================
+
+plot(
+  restaurant$Items_Ordered,
+  restaurant$Bill_Amount,
+  pch = 19,
+  cex = 1.5,
+  col = "blue",
+  main = "Items Ordered vs Bill Amount",
+  xlab = "Items Ordered",
+  ylab = "Bill Amount"
+)
+
+# Add Trend Line
+
+model <- lm(
+  Bill_Amount ~ Items_Ordered,
+  data = restaurant
+)
+
+abline(
+  model,
+  col = "red",
+  lwd = 2
+)
+
+
+#=========================================
+# Display Restaurant Data Table
+#=========================================
+
+plot.new()
+
+title("Restaurant Orders Data Table")
+
+table_data <- rbind(
+  c("Order ID","Items Ordered","Bill Amount","Dining Type"),
+  cbind(
+    restaurant$Order_ID,
+    restaurant$Items_Ordered,
+    restaurant$Bill_Amount,
+    restaurant$Dining_Type
+  )
+)
+
+text(
+  x = 0.5,
+  y = seq(0.9,0.2,length.out = nrow(table_data)),
+  labels = apply(table_data,1,paste,collapse="     "),
+  cex = 0.9
+)
+
+
+#=========================================
+# Save Dataset
+#=========================================
+
+write.csv(
+  restaurant,
+  "Restaurant_Orders_Analysis.csv",
+  row.names = FALSE
+)
+
+cat("Restaurant_Orders_Analysis.csv saved successfully.\n")
